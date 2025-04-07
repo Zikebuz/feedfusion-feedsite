@@ -2,13 +2,6 @@ import { Router } from 'itty-router'
 
 const router = Router()
 
-router.get("/", () => {
-  return new Response("Welcome to the News API", {
-    headers: { 'Content-Type': 'text/plain' }
-  })
-})
-
-
 // RSS Feeds and Categories
 const ALLOWED_CATEGORIES = ["sports", "technology", "politics", "health", "business"]
 const RSS_FEEDS = {
@@ -25,7 +18,7 @@ async function fetchAndParseRSS(url) {
     const response = await fetch(url)
     if (!response.ok) {
       console.error(`Failed to fetch from ${url}: ${response.status}`)
-      return []  // Returning an empty array if fetch fails
+      return []
     }
 
     const text = await response.text()
@@ -52,9 +45,22 @@ async function fetchAndParseRSS(url) {
     return articles
   } catch (err) {
     console.error("RSS Parse Error", err)
-    return []  // Returning an empty array in case of a parse error
+    return []
   }
 }
+
+// Helper: CORS wrapper
+function withCors(response) {
+  response.headers.set("Access-Control-Allow-Origin", "*")  // Or restrict to your domain
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type")
+  return response
+}
+
+// OPTIONS handler (CORS preflight)
+router.options("*", () => {
+  return withCors(new Response(null, { status: 204 }))
+})
 
 // GET /api/news/home — 8 articles from each category
 router.get("/api/news/home", async () => {
@@ -67,9 +73,9 @@ router.get("/api/news/home", async () => {
 
   homeNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
 
-  return new Response(JSON.stringify(homeNews), {
+  return withCors(new Response(JSON.stringify(homeNews), {
     headers: { 'Content-Type': 'application/json' }
-  })
+  }))
 })
 
 // GET /api/news/:category — Top 20 articles for category
@@ -78,13 +84,13 @@ router.get("/api/news/:category", async ({ params }) => {
   const url = RSS_FEEDS[category]
 
   if (!url) {
-    return new Response(JSON.stringify({ error: "Category not found" }), { status: 404 })
+    return withCors(new Response(JSON.stringify({ error: "Category not found" }), { status: 404 }))
   }
 
   const items = await fetchAndParseRSS(url)
-  return new Response(JSON.stringify(items.slice(0, 20)), {
+  return withCors(new Response(JSON.stringify(items.slice(0, 20)), {
     headers: { 'Content-Type': 'application/json' }
-  })
+  }))
 })
 
 // GET /api/proxy?url=...
@@ -93,7 +99,7 @@ router.get("/api/proxy", async (request) => {
   const url = searchParams.get("url")
 
   if (!url) {
-    return new Response(JSON.stringify({ error: "URL is required" }), { status: 400 })
+    return withCors(new Response(JSON.stringify({ error: "URL is required" }), { status: 400 }))
   }
 
   try {
@@ -101,10 +107,10 @@ router.get("/api/proxy", async (request) => {
       headers: { "User-Agent": "Mozilla/5.0" }
     })
     const html = await proxied.text()
-    return new Response(html, { headers: { 'Content-Type': 'text/html' } })
+    return withCors(new Response(html, { headers: { 'Content-Type': 'text/html' } }))
   } catch (err) {
     console.error("Proxy Error", err)
-    return new Response(JSON.stringify({ error: "Failed to fetch full article" }), { status: 500 })
+    return withCors(new Response(JSON.stringify({ error: "Failed to fetch full article" }), { status: 500 }))
   }
 })
 
@@ -114,7 +120,7 @@ router.post("/api/contact", async (request) => {
   const { name, email, subject, message } = body
 
   if (!name || !email || !subject || !message) {
-    return new Response(JSON.stringify({ error: "All fields are required" }), { status: 400 })
+    return withCors(new Response(JSON.stringify({ error: "All fields are required" }), { status: 400 }))
   }
 
   const emailBody = {
@@ -134,26 +140,19 @@ router.post("/api/contact", async (request) => {
   })
 
   if (emailResponse.ok) {
-    return new Response(JSON.stringify({ success: true, message: "Message sent!" }), {
+    return withCors(new Response(JSON.stringify({ success: true, message: "Message sent!" }), {
       headers: { 'Content-Type': 'application/json' }
-    })
+    }))
   } else {
     console.error("Email sending failed", await emailResponse.text())
-    return new Response(JSON.stringify({ error: "Failed to send message" }), { status: 500 })
+    return withCors(new Response(JSON.stringify({ error: "Failed to send message" }), { status: 500 }))
   }
 })
 
-// Root path test
-router.get("/", () => {
-  return new Response("FeedFused Backend Running ✅", { status: 200 })
-})
+// Fallback 404
+router.all("*", () => withCors(new Response("404 Not Found", { status: 404 })))
 
-// Default fallback
-router.all("*", () => new Response("404 Not Found", { status: 404 }))
-
-// 🟩 Correct Worker Export
+// Cloudflare Worker Entry Point
 export default {
-  async fetch(request, env, ctx) {
-    return router.handle(request)
-  }
+  fetch: (request) => router.handle(request)
 }
