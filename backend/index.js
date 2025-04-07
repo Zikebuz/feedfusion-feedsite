@@ -2,6 +2,13 @@ import { Router } from 'itty-router'
 
 const router = Router()
 
+router.get("/", () => {
+  return new Response("Welcome to the News API", {
+    headers: { 'Content-Type': 'text/plain' }
+  })
+})
+
+
 // RSS Feeds and Categories
 const ALLOWED_CATEGORIES = ["sports", "technology", "politics", "health", "business"]
 const RSS_FEEDS = {
@@ -17,8 +24,10 @@ async function fetchAndParseRSS(url) {
   try {
     const response = await fetch(url)
     if (!response.ok) {
-      throw new Error('Failed to fetch RSS feed')
+      console.error(`Failed to fetch from ${url}: ${response.status}`)
+      return []  // Returning an empty array if fetch fails
     }
+
     const text = await response.text()
     const parser = new DOMParser()
     const xml = parser.parseFromString(text, "application/xml")
@@ -43,7 +52,7 @@ async function fetchAndParseRSS(url) {
     return articles
   } catch (err) {
     console.error("RSS Parse Error", err)
-    return [] // Returning empty array to avoid hanging promise
+    return []  // Returning an empty array in case of a parse error
   }
 }
 
@@ -51,21 +60,16 @@ async function fetchAndParseRSS(url) {
 router.get("/api/news/home", async () => {
   let homeNews = []
 
-  try {
-    for (const [category, url] of Object.entries(RSS_FEEDS)) {
-      const items = await fetchAndParseRSS(url)
-      homeNews.push(...items.slice(0, 8))
-    }
-
-    homeNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-
-    return new Response(JSON.stringify(homeNews), {
-      headers: { 'Content-Type': 'application/json' }
-    })
-  } catch (err) {
-    console.error("Error in /api/news/home:", err)
-    return new Response(JSON.stringify({ error: "Failed to fetch news" }), { status: 500 })
+  for (const [category, url] of Object.entries(RSS_FEEDS)) {
+    const items = await fetchAndParseRSS(url)
+    homeNews.push(...items.slice(0, 8))
   }
+
+  homeNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+
+  return new Response(JSON.stringify(homeNews), {
+    headers: { 'Content-Type': 'application/json' }
+  })
 })
 
 // GET /api/news/:category — Top 20 articles for category
@@ -77,15 +81,10 @@ router.get("/api/news/:category", async ({ params }) => {
     return new Response(JSON.stringify({ error: "Category not found" }), { status: 404 })
   }
 
-  try {
-    const items = await fetchAndParseRSS(url)
-    return new Response(JSON.stringify(items.slice(0, 20)), {
-      headers: { 'Content-Type': 'application/json' }
-    })
-  } catch (err) {
-    console.error(`Error fetching news for category ${category}:`, err)
-    return new Response(JSON.stringify({ error: "Failed to fetch category news" }), { status: 500 })
-  }
+  const items = await fetchAndParseRSS(url)
+  return new Response(JSON.stringify(items.slice(0, 20)), {
+    headers: { 'Content-Type': 'application/json' }
+  })
 })
 
 // GET /api/proxy?url=...
@@ -104,7 +103,7 @@ router.get("/api/proxy", async (request) => {
     const html = await proxied.text()
     return new Response(html, { headers: { 'Content-Type': 'text/html' } })
   } catch (err) {
-    console.error("Proxy error:", err)
+    console.error("Proxy Error", err)
     return new Response(JSON.stringify({ error: "Failed to fetch full article" }), { status: 500 })
   }
 })
@@ -118,52 +117,43 @@ router.post("/api/contact", async (request) => {
     return new Response(JSON.stringify({ error: "All fields are required" }), { status: 400 })
   }
 
-  try {
-    // EXAMPLE: Use MailChannels to send the email
-    const emailBody = {
-      personalizations: [{ to: [{ email: "your@email.com" }] }], // Replace with real email
-      from: { email: "noreply@yourdomain.com" },
-      subject: `New Contact: ${subject}`,
-      content: [{
-        type: "text/plain",
-        value: `From: ${name} <${email}>\n\n${message}`
-      }]
-    }
+  const emailBody = {
+    personalizations: [{ to: [{ email: "your@email.com" }] }],
+    from: { email: "noreply@yourdomain.com" },
+    subject: `New Contact: ${subject}`,
+    content: [{
+      type: "text/plain",
+      value: `From: ${name} <${email}>\n\n${message}`
+    }]
+  }
 
-    const emailResponse = await fetch("https://api.mailchannels.net/tx/v1/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(emailBody)
+  const emailResponse = await fetch("https://api.mailchannels.net/tx/v1/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(emailBody)
+  })
+
+  if (emailResponse.ok) {
+    return new Response(JSON.stringify({ success: true, message: "Message sent!" }), {
+      headers: { 'Content-Type': 'application/json' }
     })
-
-    if (emailResponse.ok) {
-      return new Response(JSON.stringify({ success: true, message: "Message sent!" }), {
-        headers: { 'Content-Type': 'application/json' }
-      })
-    } else {
-      return new Response(JSON.stringify({ error: "Failed to send message" }), { status: 500 })
-    }
-  } catch (err) {
-    console.error("Error sending contact email:", err)
+  } else {
+    console.error("Email sending failed", await emailResponse.text())
     return new Response(JSON.stringify({ error: "Failed to send message" }), { status: 500 })
   }
+})
+
+// Root path test
+router.get("/", () => {
+  return new Response("FeedFused Backend Running ✅", { status: 200 })
 })
 
 // Default fallback
 router.all("*", () => new Response("404 Not Found", { status: 404 }))
 
-// Cloudflare Worker Entry Point
+// 🟩 Correct Worker Export
 export default {
-  fetch: async (request) => {
-    try {
-      const response = await router.handle(request)
-      if (!response) {
-        throw new Error('No response generated from the router')
-      }
-      return response
-    } catch (err) {
-      console.error('Error in Cloudflare Worker:', err)
-      return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 })
-    }
+  async fetch(request, env, ctx) {
+    return router.handle(request)
   }
 }
