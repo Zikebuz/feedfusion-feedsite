@@ -60,7 +60,7 @@ const PrivacyPolicy = () => {
       <p>
         If you have any questions about this Privacy Policy, please{" "}
         <a href="/contactus" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>
-          contact us
+          Contact Us
         </a>.
       </p>
     </div>

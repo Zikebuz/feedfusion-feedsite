@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import NewsModal from "./NewsModal";
 
 // Allowed Categories
-const ALLOWED_CATEGORIES = ["sports", "technology", "politics", "health", "business"];
+const ALLOWED_CATEGORIES = ["sports", "technology", "politics", "health", "business", "entertainment"];
 
 const NewsItem = ({ article }) => {
   const [showModal, setShowModal] = useState(false);

@@ -7,6 +7,7 @@ import Sports from "./pages/Sports";
 import Technology from "./pages/Technology";
 import Business from "./pages/Business";
 import Health from "./pages/Health";
+import Entertainment from "./pages/Entertainment";
 import Politics from "./pages/Politics";
 import Contactus from "./pages/Contactus";
 import Advertise from "./pages/Advertise";
@@ -22,6 +23,7 @@ console.log("Technology:", Technology);
 console.log("Business:", Business);
 console.log("Health:", Health);
 console.log("Politics:", Politics);
+console.log("Entertainment:", Business);
 console.log("Contactus:", Contactus);
 console.log("Advertise:", Advertise);
 console.log("PrivacyPolicy:", PrivacyPolicy);
@@ -46,6 +48,7 @@ const App = () => {
         <Route path="/business" element={<Business searchQuery={searchQuery} />} />
         <Route path="/health" element={<Health searchQuery={searchQuery} />} />
         <Route path="/politics" element={<Politics searchQuery={searchQuery} />} />
+        <Route path="/entertainment" element={<Entertainment searchQuery={searchQuery} />} />
         <Route path="/advertise" element={<Advertise />} />
         <Route path="/contactus" element={<Contactus />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />

@@ -16,7 +16,7 @@ const Advertise = () => {
       <p>
         📩 <strong>Interested in advertising with us?</strong>{" "}
         <Link to="/contactus" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>
-          Contact our team
+          Contact Our Team
         </Link>{" "}
         for pricing and placement options.
       </p>

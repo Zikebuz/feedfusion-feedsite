@@ -40,7 +40,7 @@ const Navbar = ({ onSearch }) => {
             <li className="nav-item"><Link className="nav-link" to="/business">Business</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/health">Health</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/politics">Politics</Link></li>
-
+            <li className="nav-item"><Link className="nav-link" to="/entertainment">Entertainment</Link></li>
             {/* Dropdown Menu */}
             <li className="nav-item dropdown">
               <button

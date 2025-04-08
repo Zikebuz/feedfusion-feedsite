@@ -242,6 +242,13 @@ p img {
     background-color: #6f42c1;
     color: white;
   }
+
+   /* Entertainment - Pink */
+   .entertainment {
+    background-color: #b97b86;
+    color: white;
+  }
+  
   
   /* 🏷️ General News Category Styling */
   .news-category {
@@ -269,7 +276,7 @@ p img {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: #f4f4f9; /* Soft background for better contrast */
+    background: #c7c7c7; /* Soft background for better contrast */
     padding: 20px;
   }
   
