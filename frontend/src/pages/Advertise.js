@@ -6,7 +6,7 @@ const Advertise = () => {
     <div style={{ padding: "20px", maxWidth: "800px", margin: "auto" }}>
       <h1>Advertise With Us</h1>
       <p>
-        Welcome to <strong>Feedfusion</strong>, your go-to platform for the latest and most relevant news. Our rapidly growing audience stays updated on
+        Welcome to <strong>Newstarn</strong>, your go-to platform for the latest and most relevant news. Our rapidly growing audience stays updated on
         politics, business, technology, sports, and health, making it the perfect place to showcase your brand.
       </p>
       <p>

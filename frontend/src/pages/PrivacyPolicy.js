@@ -8,7 +8,7 @@ const PrivacyPolicy = () => {
 
       <h2>1. Introduction</h2>
       <p>
-        Welcome to <strong>Feedfusion</strong>. We are committed to protecting your privacy and ensuring the security of your personal information.
+        Welcome to <strong>Newstarn</strong>. We are committed to protecting your privacy and ensuring the security of your personal information.
         This Privacy Policy outlines how we collect, use, and protect your data when you visit our website.
       </p>
 
