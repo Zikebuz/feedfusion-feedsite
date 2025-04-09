@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="col-md-3 mb-3">
             <h5>About Us</h5>
             <p>
-              Newstarn is where you experience effortless information consumption with a handpicked collection of news from reliable providers.
+              Stay informed effortlessly with a curated collection of news from trusted sources in Newstarn
             </p>
           </div>
 
