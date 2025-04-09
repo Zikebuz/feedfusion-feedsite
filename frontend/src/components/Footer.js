@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="row">
           {/* About Us Section */}
           <div className="col-md-3 mb-3">
-            <h5>About Us</h5>
+            <h5>What We Do</h5>
             <p>
               Stay informed effortlessly with a curated collection of news from trusted sources in Newstarn
             </p>
