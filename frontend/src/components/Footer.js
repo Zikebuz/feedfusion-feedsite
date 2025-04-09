@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="col-md-3 mb-3">
             <h5>About Us</h5>
             <p>
-              Feedfusion is a Nigerian news aggregating site that offers up-to-date news
+              Newstarn is a Nigerian news aggregating site that offers up-to-date news
               from reputable sources all in one place.
             </p>
           </div>
@@ -63,7 +63,7 @@ const Footer = () => {
         {/* Copyright & Footer Info */}
         <div className="text-center">
           <p className="mb-0">
-            Feedsfusion &copy; {new Date().getFullYear()} | All rights reserved
+            Newstarn &copy; {new Date().getFullYear()} | All rights reserved
           </p>
         </div>
       </div>
