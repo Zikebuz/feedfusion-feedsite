@@ -150,7 +150,7 @@ if (path === "/api/contact" && request.method === "POST") {
 	  }
   
 	  const emailBody = {
-		from: "support@newstarn.com", // show sender as user
+    from: `${name} <support@newstarn.com>`, // show sender as user
 		to: [env.EMAIL_RECEIVER], // your receiving email (set in wrangler config)
 		subject,
 		text: `From: ${name} <${email}>\n\nSubject: ${subject}\n\nMessage:\n${message}`,
