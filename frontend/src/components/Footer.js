@@ -12,8 +12,7 @@ const Footer = () => {
           <div className="col-md-3 mb-3">
             <h5>About Us</h5>
             <p>
-              Newstarn is a Nigerian news aggregating site that offers up-to-date news
-              from reputable sources all in one place.
+              Newstarn is where you experience effortless information consumption with a handpicked collection of news from reliable providers.
             </p>
           </div>
 
@@ -44,10 +43,10 @@ const Footer = () => {
             <h5>Follow Us</h5>
             <div className="d-flex footer-icons">
 
-              <a href="https://www.facebook.com/profile.php?id=61574990331253" className="text-light me-3" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.facebook.com/people/Newstarn/61574926899598/" className="text-light me-3" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faFacebook} size="2x" />
               </a>
-              <a href="https://www.instagram.com/feedfusionnews/" className="text-light" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.instagram.com/newstarnz/" className="text-light" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faInstagram} size="2x" />
               </a>
               {/* <a href="https://www.facebook.com/profile.php?id=61574990331253" className="text-light me-3"><FontAwesomeIcon icon={faFacebook} size="2x" target="_blank" /></a> */}
