@@ -10,7 +10,7 @@
 	"compatibility_date": "2025-04-07",
 	"vars": {
 		  "RESEND_API_KEY": "re_CN7wN34B_MaWhnEecBogiya6TxFxKxxMV",
-		  "EMAIL_RECEIVER": "www.zik@yahoo.com"
+		  "EMAIL_RECEIVER": "support@newstarn.com",
 		},
 	"observability": {
 		"enabled": true
