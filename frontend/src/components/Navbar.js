@@ -19,7 +19,7 @@ const Navbar = ({ onSearch }) => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark position-relative">
       <div className="container">
         <Link className="navbar-brand d-flex align-items-center" to="/">
-          <FontAwesomeIcon icon={faHome} className="me-2" /> Newstarn
+          <FontAwesomeIcon icon={faHome} className="me-2" /> NewsTarn
         </Link>
 
         <button
