@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import '../styles/style.css'; // Ensure the CSS is correctly linked
 
 const Footer = () => {
@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="col-md-3 mb-3">
             <h5>What We Offer</h5>
             <p>
-              We provide a curated collection of news from trusted sources within Newstarn to keep you informed.
+              We provide a curated collection of news from trusted sources within Newstarn to keep you informed
             </p>
           </div>
 
@@ -46,12 +46,17 @@ const Footer = () => {
               <a href="https://www.facebook.com/people/Newstarn/61574926899598/" className="text-light me-3" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faFacebook} size="2x" />
               </a>
-              <a href="https://www.instagram.com/newstarnz/" className="text-light" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.instagram.com/newstarnz/" className="text-light me-3" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faInstagram} size="2x" />
               </a>
+              
+              <a href="https:www.youtube.com" className="text-light me-3" target="_blank" rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faYoutube} size="2x" />
+              </a>
+
               {/* <a href="https://www.facebook.com/profile.php?id=61574990331253" className="text-light me-3"><FontAwesomeIcon icon={faFacebook} size="2x" target="_blank" /></a> */}
-              {/* <a href="#" className="text-light me-3"><FontAwesomeIcon icon={faTwitter} size="2x" /></a> */}
-              {/* <a href="#" className="text-light me-3"><FontAwesomeIcon icon={faLinkedin} size="2x" /></a> */}
+              {/* <a href="https://www.x.com" className="text-light me-3"><FontAwesomeIcon icon={faTwitter} size="2x" /></a> */}
+              {/* <a href="https://www.linkedin.com" className="text-light me-3"><FontAwesomeIcon icon={faLinkedin} size="2x" /></a> */}
               {/* <a href="https://www.instagram.com/feedfusionnews/" className="text-light"><FontAwesomeIcon icon={faInstagram} size="2x" target="_blank" /></a> */}
             </div>
           </div>
