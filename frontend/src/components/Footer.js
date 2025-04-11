@@ -50,7 +50,7 @@ const Footer = () => {
                 <FontAwesomeIcon icon={faInstagram} size="2x" />
               </a>
               
-              <a href="https:www.youtube.com" className="text-light me-3" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.youtube.com/channel/UCmFWjs94o7yOrFYwwlT2geQ?sub_confirmation=1" className="text-light me-3" target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faYoutube} size="2x" />
               </a>
 
