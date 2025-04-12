@@ -136,55 +136,64 @@ export default {
     }
 
 
-// Contact form logic with Resend
+// Contact form logic with Resend - Improved
 if (path === "/api/contact" && request.method === "POST") {
-	try {
-	  const body = await request.json();
-	  const { name, email, subject, message } = body;
-  
-	  if (!name || !email || !subject || !message) {
-		return new Response(JSON.stringify({ error: "All fields are required." }), {
-		  status: 400,
-		  headers: corsHeaders(),
-		});
-	  }
-  
-	  const emailBody = {
-    from: `${name} <support@newstarn.com>`, // show sender as user
-		to: [env.EMAIL_RECEIVER], // your receiving email (set in wrangler config)
-		subject,
-		text: `From: ${name} <${email}>\n\nSubject: ${subject}\n\nMessage:\n${message}`,
-	  };
-  
-	  const resendResp = await fetch("https://api.resend.com/emails", {
-		method: "POST",
-		headers: {
-		  "Authorization": `Bearer ${env.RESEND_API_KEY}`,
-		  "Content-Type": "application/json",
-		},
-		body: JSON.stringify(emailBody),
-	  });
-  
-	  if (!resendResp.ok) {
-		const errorText = await resendResp.text();
-		console.error("Resend API error:", errorText);
-		return new Response(JSON.stringify({ error: "Failed to send message." }), {
-		  status: resendResp.status,
-		  headers: corsHeaders(),
-		});
-	  }
-  
-	  return new Response(JSON.stringify({ success: true, message: "Message sent successfully!" }), {
-		headers: corsHeaders(),
-	  });
-	} catch (err) {
-	  console.error("Contact form error:", err);
-	  return new Response(JSON.stringify({ error: "Unexpected server error." }), {
-		status: 500,
-		headers: corsHeaders(),
-	  });
-	}
+  try {
+    const body = await request.json();
+    const { name, email, subject, message } = body;
+
+    if (!name || !email || !subject || !message) {
+      return new Response(JSON.stringify({ error: "All fields are required." }), {
+        status: 400,
+        headers: corsHeaders(),
+      });
+    }
+
+    const emailBody = {
+      from: "support@newstarn.com", // your verified sender
+      to: [env.EMAIL_RECEIVER],
+      subject,
+      text: `From: ${name} <${email}>\n\nSubject: ${subject}\n\nMessage:\n${message}`,
+      reply_to: email, // proper way to direct replies
+      tags: ["contact-form"], // optional: for filtering in Resend dashboard
+      metadata: {
+        name,
+        senderEmail: email,
+        source: "contact-form",
+      },
+    };
+
+    const resendResp = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(emailBody),
+    });
+
+    if (!resendResp.ok) {
+      const errorText = await resendResp.text();
+      console.error("Resend API error:", errorText);
+      return new Response(JSON.stringify({ error: "Failed to send message." }), {
+        status: resendResp.status,
+        headers: corsHeaders(),
+      });
+    }
+
+    return new Response(JSON.stringify({ success: true, message: "Message sent successfully!" }), {
+      headers: corsHeaders(),
+    });
+
+  } catch (err) {
+    console.error("Contact form error:", err);
+    return new Response(JSON.stringify({ error: "Unexpected server error." }), {
+      status: 500,
+      headers: corsHeaders(),
+    });
   }
+}
+
   
   
 
