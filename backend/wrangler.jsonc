@@ -9,13 +9,14 @@
 	"compatibility_flags": ["nodejs_compat"],
 	"compatibility_date": "2025-04-07",
 	"vars": {
-		  "RESEND_API_KEY": "re_CN7wN34B_MaWhnEecBogiya6TxFxKxxMV",
-		  "EMAIL_RECEIVER": "www.zik@yahoo.com",
+		  "RESEND_API_KEY": "",
+		  "EMAIL_RECEIVER": "",
 		},
 	"observability": {
 		"enabled": true
 	},
 
+	
 	
 		
 	  
