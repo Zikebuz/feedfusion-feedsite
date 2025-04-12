@@ -228,7 +228,7 @@ if (path === "/api/contact" && request.method === "POST") {
     const resendResp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${env.RESEND_KEY}`, // Resend API Key
+        "Authorization": `Bearer ${env.RESEND_API_KEY}`, // Resend API Key
         "Content-Type": "application/json",
       },
       body: JSON.stringify(emailBody),
@@ -254,9 +254,6 @@ if (path === "/api/contact" && request.method === "POST") {
     });
   }
 }
-
-  
-  
 
     // Default response
     return new Response("Hello from FeedFusion Cloudflare Worker!", {
