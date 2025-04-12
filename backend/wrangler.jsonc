@@ -8,10 +8,6 @@
 	"main": "src/index.js",
 	"compatibility_flags": ["nodejs_compat"],
 	"compatibility_date": "2025-04-07",
-	"vars": {
-		  "RESEND_API_KEY": "",
-		  "EMAIL_RECEIVER": "",
-		},
 	"observability": {
 		"enabled": true
 	},
