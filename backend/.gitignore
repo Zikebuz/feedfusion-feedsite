@@ -1,6 +1,5 @@
 
 # Ignore wrangler.jsonc (or any other sensitive files)
-wrangler.jsonc
 
 # Ignore .env file
 .env
