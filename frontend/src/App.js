@@ -71,11 +71,11 @@ import Technology from "./pages/Technology";
 import Business from "./pages/Business";
 import Health from "./pages/Health";
 import Entertainment from "./pages/Entertainment";
+import MaintenancePage from "./pages/MaintenancePage";
 import Politics from "./pages/Politics";
 import Contactus from "./pages/Contactus";
 import Advertise from "./pages/Advertise";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import MaintenancePage from "./pages/Maintenance"; // 🔹 Create this page
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => {
