@@ -47,7 +47,7 @@ const Entertainment = ({ searchQuery }) => {
             ))
           ) : (
             <p style={{ textAlign: "center", color: "red", fontSize: "18px" }}>
-              No results found in this category.
+              Please check back later...
             </p>
           )}
         </div>
