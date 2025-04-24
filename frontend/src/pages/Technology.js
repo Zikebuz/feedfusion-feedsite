@@ -1,24 +1,50 @@
 import React, { useEffect, useState } from "react";
 import NewsItem from "../components/NewsItem";
 
-const backendUrl = process.env.REACT_APP_BACKEND_URL; // ✅ Load from .env
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const Technology = ({ searchQuery }) => {
   const [news, setNews] = useState([]);
   const [filteredNews, setFilteredNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
-    fetch(`${backendUrl}/api/news/technology`) // ✅ Fetch technology news dynamically
-      .then((response) => response.json())
+    // Try to load from localStorage first
+    const cachedNews = localStorage.getItem('cachedTechnologyNews');
+    const cacheTime = localStorage.getItem('cachedTechnologyNewsTime');
+    
+    if (cachedNews && cacheTime && Date.now() - parseInt(cacheTime) < 1000 * 60 * 5) {
+      setNews(JSON.parse(cachedNews));
+      setFilteredNews(JSON.parse(cachedNews));
+      setLoading(false);
+      setInitialLoad(false);
+    }
+
+    // Always fetch fresh data in background
+    fetch(`${backendUrl}/api/news/technology`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
       .then((data) => {
         setNews(data);
         setFilteredNews(data);
-        setLoading(false);
+        localStorage.setItem('cachedTechnologyNews', JSON.stringify(data));
+        localStorage.setItem('cachedTechnologyNewsTime', Date.now().toString());
       })
       .catch((error) => {
         console.error("Error fetching technology news:", error);
+        // If we have cached data but fetch failed, don't show error
+        if (!cachedNews) {
+          // Handle error state if needed
+        }
+      })
+      .finally(() => {
         setLoading(false);
+        setInitialLoad(false);
       });
   }, []);
 
@@ -36,7 +62,7 @@ const Technology = ({ searchQuery }) => {
 
   return (
     <div className="technology-container">
-      {loading ? (
+      {initialLoad && loading ? (
         <p style={{ textAlign: "center", margin: "10% auto" }}>Loading...</p>
       ) : (
         <div className="grid-view">
@@ -46,7 +72,7 @@ const Technology = ({ searchQuery }) => {
             ))
           ) : (
             <p style={{ textAlign: "center", color: "red", fontSize: "18px" }}>
-              Please check back later...
+              {searchQuery ? "No results found." : "No technology news available."}
             </p>
           )}
         </div>

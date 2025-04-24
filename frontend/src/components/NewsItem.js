@@ -49,7 +49,7 @@ const NewsItem = ({ article }) => {
 
         {/* Read More Button with Active Click Effect */}
         <button
-          className={`read-more-btn ${isActive ? "active-click" : ""}`}
+          className={`read-more-btn  ${isActive ? "active-click" : ""}`}
           onClick={handleButtonClick}
         >
           Read More
