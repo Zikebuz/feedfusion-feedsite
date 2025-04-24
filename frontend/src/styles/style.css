@@ -375,10 +375,16 @@ p img {
     .grid-view {
         grid-template-columns: repeat(2, 300px); /* 2 columns on medium screens */
     }
+    .read-more-btn{
+      margin-top: 10px;
+    }
 }
 
 @media (max-width: 700px) {
     .grid-view {
         grid-template-columns: repeat(1, 300px); /* 1 column on mobile */
+    }
+    .read-more-btn{
+      margin-top: 10px;
     }
 }
