@@ -44,7 +44,7 @@ const NewsItem = ({ article }) => {
         <h3 className="news-title">{article.title}</h3>
         <img src={article.image} alt={article.title} className="news-image" />
 
-        <p className="news-description" style={{ marginBottom: "-25px" }} 
+        <p className="news-description" style={{ marginBottom: "25px" }} 
            dangerouslySetInnerHTML={{ __html: cleanedDescription }}></p>
 
         {/* Read More Button with Active Click Effect */}
