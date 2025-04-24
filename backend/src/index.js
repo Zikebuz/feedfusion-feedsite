@@ -213,7 +213,7 @@ export default {
           }
         }
 
-        return new Response(JSON.stringify(news.slice(0, 12)), {
+        return new Response(JSON.stringify(news.slice(0, 8)), {
           headers: {
             "Content-Type": "application/json",
             ...corsHeaders()
