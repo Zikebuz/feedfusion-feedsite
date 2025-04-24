@@ -15,10 +15,6 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 
-
-
-
-
 const App = () => {
   const [searchQuery, setSearchQuery] = useState("");
 

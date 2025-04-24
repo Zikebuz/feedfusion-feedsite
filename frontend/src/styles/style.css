@@ -1,5 +1,6 @@
 /* Ensure full-page height */
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   display: flex;
@@ -7,7 +8,8 @@ html, body {
 }
 
 /* Make sure content pushes footer down */
-#root, .app-container {
+#root,
+.app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -39,10 +41,14 @@ main {
 
 /* Grid layout for news articles */
 .grid-view {
-  display: grid; /* Use grid layout */
-  grid-template-columns: repeat(4, 300px); /* 4 columns of 300px each */
-  gap: 10px; /* Space between grid items */
-  justify-content: center; /* Center items horizontally */
+  display: grid;
+  /* Use grid layout */
+  grid-template-columns: repeat(4, 300px);
+  /* 4 columns of 300px each */
+  gap: 10px;
+  /* Space between grid items */
+  justify-content: center;
+  /* Center items horizontally */
   margin-top: 30px;
   margin-bottom: 30px;
 }
@@ -50,7 +56,7 @@ main {
 /* Individual news item container */
 .news-item {
   border: 0.1px;
-  border-style:outset;
+  border-style: outset;
   border-radius: 4px;
   list-style-type: none;
   padding: 10px;
@@ -63,19 +69,22 @@ main {
   list-style-type: none;
   text-transform: capitalize;
   display: inline-flex;
-  font-size:20px;
+  font-size: 20px;
   font-weight: 500;
 }
 
 /* Ensure images fit inside news items */
 .news-image {
   max-width: 100%;
-  height: auto; /* Maintain aspect ratio */
+  height: auto;
+  /* Maintain aspect ratio */
 }
 
 p img {
-  display: block; /* Makes it a block element */
-  margin: 0 auto; /* Centers it horizontally */
+  display: block;
+  /* Makes it a block element */
+  margin: 0 auto;
+  /* Centers it horizontally */
   max-width: 100%;
   height: auto;
   border-radius: 5px;
@@ -97,7 +106,8 @@ p img {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 15px; /* Space between items */
+  gap: 15px;
+  /* Space between items */
   margin-top: 10px;
 }
 
@@ -107,7 +117,8 @@ p img {
 
 /* Dropdown Menu */
 .custom-dropdown {
-  background: #212529 !important; /* Slightly lighter than navbar */
+  background: #212529 !important;
+  /* Slightly lighter than navbar */
   border: none !important;
 }
 
@@ -118,6 +129,7 @@ p img {
 .custom-dropdown .dropdown-item:hover {
   background: #3a3a3a !important;
 }
+
 /* ends */
 
 
@@ -136,13 +148,15 @@ p img {
   border: 1px solid transparent;
   padding: 5px;
   transition: all 0.3s ease-in-out;
-  width: 40px; /* Initially small */
+  width: 40px;
+  /* Initially small */
   overflow: hidden;
 }
 
 /* When Search Box is Open */
 .search-box.open {
-  width: 400px; /* Increased width */
+  width: 400px;
+  /* Increased width */
   border: 1px solid rgba(255, 255, 255, 0.5);
   background: #212529;
   border-radius: 5px;
@@ -166,7 +180,8 @@ p img {
   font-size: 14px;
   width: 100%;
   padding-left: 8px;
-  display: none; /* Initially hidden */
+  display: none;
+  /* Initially hidden */
 }
 
 /* Show Input Field when Box is Open */
@@ -180,7 +195,7 @@ p img {
   .search-box .search-input {
     width: 0;
   }
-  
+
   .search-box.open .search-input {
     width: 100px;
   }
@@ -190,7 +205,8 @@ p img {
 
 /* 🔘 Read More Button Styles */
 .read-more-btn {
-  background-color: #007bff; /* Blue background */
+  background-color: #007bff;
+  /* Blue background */
   color: white;
   padding: 10px 16px;
   font-size: 16px;
@@ -203,13 +219,16 @@ p img {
 }
 
 .read-more-btn:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #0056b3;
+  /* Darker blue on hover */
 }
 
-.read-more-btn:active, 
+.read-more-btn:active,
 .active-click {
-  transform: scale(0.93); /* Shrink effect on click */
-  background-color: #004092; /* Even darker blue */
+  transform: scale(0.93);
+  /* Shrink effect on click */
+  background-color: #004092;
+  /* Even darker blue */
   opacity: 0.8;
 }
 
@@ -247,8 +266,8 @@ p img {
   color: white;
 }
 
- /* Entertainment - Pink */
- .entertainment {
+/* Entertainment - Pink */
+.entertainment {
   background-color: #b97b86;
   color: white;
 }
@@ -280,7 +299,8 @@ p img {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #c7c7c7; /* Soft background for better contrast */
+  background: #c7c7c7;
+  /* Soft background for better contrast */
   padding: 20px;
 }
 
@@ -365,22 +385,23 @@ p img {
 /* Responsive Fix: Adjust spacing on small screens */
 @media (max-width: 700px) {
   .news-footer {
-      flex-wrap: wrap;
-      gap: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 }
 
 /* Responsive Grid Layout */
 @media (max-width: 1280px) {
   .grid-view {
-      grid-template-columns: repeat(2, 300px); /* 2 columns on medium screens */
+    grid-template-columns: repeat(2, 300px);
+    /* 2 columns on medium screens */
   }
 }
 
 @media (max-width: 700px) {
   .grid-view {
-      grid-template-columns: repeat(1, 300px); /* 1 column on mobile */
+    grid-template-columns: repeat(1, 300px);
+    /* 1 column on mobile */
   }
-  
-}
 
+}
