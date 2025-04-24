@@ -88,7 +88,6 @@ p img {
 .news-description {
   margin: 10px 0;
   text-align: left;
-  padding-bottom: 20px;
   opacity: 0.8;
   font-family: inherit;
 }
@@ -196,6 +195,7 @@ p img {
   padding: 10px 16px;
   font-size: 16px;
   border: none;
+  margin-top: 20px;
   cursor: pointer;
   border-radius: 5px;
   display: inline-block;
