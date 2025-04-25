@@ -380,7 +380,10 @@ p img {
   color: #721c24;
 }
 
-
+.news-social-media a {
+  min-width: 150px;
+  text-align: center;
+}
 
 
 /* Responsive Fix: Adjust spacing on small screens */
