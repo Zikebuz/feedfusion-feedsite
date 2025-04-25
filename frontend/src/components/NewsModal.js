@@ -236,23 +236,14 @@ const NewsModal = ({ show, handleClose, article }) => {
     }
   }, [show, article, cleanContent]);
 
- // Guaranteed working share function
- const share = (platform) => {
-  if (!article?.link) return;
-  
-  const url = encodeURIComponent(window.location.href); // Use current page URL as fallback
-  const title = encodeURIComponent(article.title || "Interesting news");
-  
-  let shareUrl;
-  if (platform === 'facebook') {
-    shareUrl = `https://www.facebook.com/sharer.php?u=${url}&t=${title}`;
-  } else {
-    shareUrl = `https://twitter.com/share?url=${url}&text=${title}`;
-  }
-
-  // This will bypass most popup blockers
-  const win = window.open(shareUrl, 'Share', 'width=600,height=400');
-  win?.focus();
+ // Build share URLs safely
+ const shareUrls = {
+  facebook: article?.link 
+    ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.link)}&quote=${encodeURIComponent(article.title || '')}`
+    : '#',
+  twitter: article?.link
+    ? `https://twitter.com/intent/tweet?url=${encodeURIComponent(article.link)}&text=${encodeURIComponent(article.title || '')}`
+    : '#'
 };
 
 return (
@@ -261,25 +252,30 @@ return (
       <Modal.Title>{article?.title || "News Article"}</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      {/* ... (keep your existing content rendering) */}
+      
 
+        {/* Social Media Share Buttons */}
       <div className="d-flex gap-2 mt-3">
-        <button
-          onClick={() => share('facebook')}
-          className="btn btn-primary flex-grow-1"
-          disabled={!article?.link}
-        >
-          <i className="bi bi-facebook me-2"></i> Share
-        </button>
-        
-        <button
-          onClick={() => share('twitter')}
-          className="btn btn-info flex-grow-1"
-          disabled={!article?.link}
-        >
-          <i className="bi bi-twitter me-2"></i> Tweet
-        </button>
-      </div>
+          <a
+            href={shareUrls.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary flex-grow-1"
+            onClick={(e) => !article?.link && e.preventDefault()}
+          >
+            <i className="bi bi-facebook me-2"></i> Share
+          </a>
+          
+          <a
+            href={shareUrls.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-info flex-grow-1"
+            onClick={(e) => !article?.link && e.preventDefault()}
+          >
+            <i className="bi bi-twitter me-2"></i> Tweet
+          </a>
+        </div>
   </Modal.Body>
   </Modal>
 );
