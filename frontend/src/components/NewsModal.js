@@ -214,6 +214,17 @@ const NewsModal = ({ show, handleClose, article }) => {
       });
   }, [UNWANTED_PHRASES]); // Now properly included in dependencies
 
+
+  // Define the share handler function
+  const handleSocialShare = (e, platform) => {
+    if (!article?.link) {
+      e.preventDefault();
+      // Optionally add analytics or other silent handling here
+    }
+    // The default behavior (opening the share window) will proceed if link exists
+  };
+
+
   // Rest of the component remains the same...
   useEffect(() => {
     if (show) {
