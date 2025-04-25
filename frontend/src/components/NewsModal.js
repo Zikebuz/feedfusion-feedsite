@@ -146,13 +146,16 @@
 // export default NewsModal;
 
 
+
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import '../styles/style.css';
 
+
 const NewsModal = ({ show, handleClose, article }) => {
   const [fullContent, setFullContent] = useState("Loading full news content...");
-
+  const baseShareUrl = article?.link; 
+  // Memoize the unwanted phrases array so it doesn't change between renders
   const UNWANTED_PHRASES = useMemo(() => [
     "READ ALSO:",
     "READ ALSO",
@@ -207,14 +210,16 @@ const NewsModal = ({ show, handleClose, article }) => {
       .filter(paragraph => {
         const textContent = paragraph.replace(/<[^>]+>/g, '').trim();
         return textContent.length > 20 &&
-          !/^[\s\W]*$/.test(textContent) &&
-          !/^[\d\W]+$/.test(textContent);
+               !/^[\s\W]*$/.test(textContent) &&
+               !/^[\d\W]+$/.test(textContent);
       });
-  }, [UNWANTED_PHRASES]);
+  }, [UNWANTED_PHRASES]); // Now properly included in dependencies
 
+
+  // Rest of the component remains the same...
   useEffect(() => {
     if (show) {
-      if (article?.contentParagraphs?.length > 0) {
+      if (article?.contentParagraphs && article.contentParagraphs.length > 0) {
         const cleanedParagraphs = cleanContent(article.contentParagraphs);
 
         if (cleanedParagraphs.length > 0) {
@@ -232,14 +237,7 @@ const NewsModal = ({ show, handleClose, article }) => {
     }
   }, [show, article, cleanContent]);
 
-  const shareUrls = useMemo(() => ({
-    facebook: article?.link
-      ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.link)}&quote=${encodeURIComponent(article.title || '')}`
-      : '#',
-    twitter: article?.link
-      ? `https://twitter.com/intent/tweet?url=${encodeURIComponent(article.link)}&text=${encodeURIComponent(article.title || '')}`
-      : '#'
-  }), [article]);
+ 
 
   return (
     <Modal show={show} onHide={handleClose} centered size="lg">
@@ -247,40 +245,41 @@ const NewsModal = ({ show, handleClose, article }) => {
         <Modal.Title>{article?.title || "News Article"}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div
-          dangerouslySetInnerHTML={{ __html: fullContent }}
-        />
+        {article?.image && (
+          <div className="text-center">
+            <img
+              src={article.image}
+              className="img-fluid mb-3"
+              style={{ borderRadius: "10px" }}
+              alt="News"
+            />
+          </div>
+        )}
 
-        <div className="d-flex gap-2 mt-3">
-          <a
-            href={shareUrls.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary flex-grow-1"
-            onClick={(e) => {
-              if (!article?.link) {
-                e.preventDefault();
-                alert("Cannot share. Article link is missing.");
-              }
-            }}
-          >
-            <i className="bi bi-facebook me-2"></i> Share
-          </a>
+        <div dangerouslySetInnerHTML={{ __html: fullContent }}></div>
 
-          <a
-            href={shareUrls.twitter}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-info flex-grow-1"
-            onClick={(e) => {
-              if (!article?.link) {
-                e.preventDefault();
-                alert("Cannot tweet. Article link is missing.");
-              }
-            }}
-          >
-            <i className="bi bi-twitter me-2"></i> Tweet
-          </a>
+         {/* Social Media Share Buttons */}
+        <div className="news-social-media mt-3">
+        <a
+  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseShareUrl)}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="btn btn-outline-primary me-2"
+>
+  Share on Facebook
+</a>
+
+
+
+<a
+  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(baseShareUrl)}&text=${encodeURIComponent(article?.title || "")}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="btn btn-outline-info"
+>
+  Share on Twitter
+</a>
+
         </div>
       </Modal.Body>
     </Modal>
