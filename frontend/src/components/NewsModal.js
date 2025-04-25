@@ -235,54 +235,68 @@ const NewsModal = ({ show, handleClose, article }) => {
       }
     }
   }, [show, article, cleanContent]);
+// Improved share function
+const handleShare = (platform) => {
+  if (!article?.link) return;
+  
+  const url = encodeURIComponent(article.link);
+  const title = encodeURIComponent(article.title || "Check out this article");
+  const text = encodeURIComponent(`${article.title || "Interesting article"} - ${article.link}`);
+  
+  let shareUrl;
+  switch(platform) {
+    case 'facebook':
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`;
+      break;
+    case 'twitter':
+      shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+      break;
+    default:
+      return;
+  }
+  
+  window.open(shareUrl, '_blank', 'width=600,height=400');
+};
 
-  const baseShareUrl = article?.link;
-
-  return (
-    <Modal show={show} onHide={handleClose} centered size="lg">
-      <Modal.Header closeButton>
-        <Modal.Title>{article?.title || "News Article"}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {article?.image && (
-          <div className="text-center">
-            <img
-              src={article.image}
-              className="img-fluid mb-3"
-              style={{ borderRadius: "10px" }}
-              alt="News"
-            />
-          </div>
-        )}
-
-        <div dangerouslySetInnerHTML={{ __html: fullContent }}></div>
-
-        {/* Social Media Share Buttons */}
-        <div className="news-social-media mt-3">
-          <a
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseShareUrl)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-outline-primary me-2"
-          >
-            Share on Facebook
-          </a>
-
-
-
-          <a
-            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(baseShareUrl)}&text=${encodeURIComponent(article?.title || "")}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-outline-info"
-          >
-            Share on Twitter
-          </a>
-
+return (
+  <Modal show={show} onHide={handleClose} centered size="lg">
+    <Modal.Header closeButton>
+      <Modal.Title>{article?.title || "News Article"}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      {article?.image && (
+        <div className="text-center">
+          <img
+            src={article.image}
+            className="img-fluid mb-3"
+            style={{ borderRadius: "10px" }}
+            alt="News"
+          />
         </div>
-      </Modal.Body>
-    </Modal>
-  );
+      )}
+
+      <div dangerouslySetInnerHTML={{ __html: fullContent }}></div>
+
+      <div className="news-social-media mt-3">
+        <button
+          onClick={() => handleShare('facebook')}
+          className="btn btn-outline-primary me-2"
+          disabled={!article?.link}
+        >
+          Share on Facebook
+        </button>
+        
+        <button
+          onClick={() => handleShare('twitter')}
+          className="btn btn-outline-info"
+          disabled={!article?.link}
+        >
+          Share on Twitter
+        </button>
+      </div>
+    </Modal.Body>
+  </Modal>
+);
 };
 
 export default NewsModal;
