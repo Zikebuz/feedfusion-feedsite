@@ -69,7 +69,14 @@ const NewsItem = ({ article }) => {
 
       {/* News Modal */}
       {showModal && (
-        <NewsModal show={showModal} handleClose={() => setShowModal(false)} article={{ ...article, link: readMoreLink }} />
+        // <NewsModal show={showModal} handleClose={() => setShowModal(false)} article={{ ...article, link: readMoreLink }} />
+        <NewsModal 
+        show={showModal} 
+        handleClose={() => setShowModal(false)} 
+        article={{ ...article, link: readMoreLink || article.link }}
+        category={category}
+      />
+      
       )}
     </>
   );
