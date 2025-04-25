@@ -146,7 +146,6 @@
 // export default NewsModal;
 
 
-
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import '../styles/style.css';
@@ -154,7 +153,6 @@ import '../styles/style.css';
 const NewsModal = ({ show, handleClose, article }) => {
   const [fullContent, setFullContent] = useState("Loading full news content...");
 
-  // Memoize the unwanted phrases array so it doesn't change between renders
   const UNWANTED_PHRASES = useMemo(() => [
     "READ ALSO:",
     "READ ALSO",
@@ -212,13 +210,11 @@ const NewsModal = ({ show, handleClose, article }) => {
           !/^[\s\W]*$/.test(textContent) &&
           !/^[\d\W]+$/.test(textContent);
       });
-  }, [UNWANTED_PHRASES]); // Now properly included in dependencies
+  }, [UNWANTED_PHRASES]);
 
-
-  // Rest of the component remains the same...
   useEffect(() => {
     if (show) {
-      if (article?.contentParagraphs && article.contentParagraphs.length > 0) {
+      if (article?.contentParagraphs?.length > 0) {
         const cleanedParagraphs = cleanContent(article.contentParagraphs);
 
         if (cleanedParagraphs.length > 0) {
@@ -236,66 +232,59 @@ const NewsModal = ({ show, handleClose, article }) => {
     }
   }, [show, article, cleanContent]);
 
-  const handleShare = async (platform) => {
-    if (!article?.link) return;
+  const shareUrls = useMemo(() => ({
+    facebook: article?.link
+      ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.link)}&quote=${encodeURIComponent(article.title || '')}`
+      : '#',
+    twitter: article?.link
+      ? `https://twitter.com/intent/tweet?url=${encodeURIComponent(article.link)}&text=${encodeURIComponent(article.title || '')}`
+      : '#'
+  }), [article]);
 
-    // Try Web Share API first (mobile devices)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: article.title,
-          url: article.link
-        });
-        return;
-      } catch (e) {
-        console.log('Web Share cancelled');
-      }
-    }
+  return (
+    <Modal show={show} onHide={handleClose} centered size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>{article?.title || "News Article"}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div
+          dangerouslySetInnerHTML={{ __html: fullContent }}
+        />
 
-    // Fallback for desktop browsers
-    const url = encodeURIComponent(article.link);
-    const title = encodeURIComponent(article.title || 'Check this out');
-    
-    let shareUrl;
-    if (platform === 'facebook') {
-      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`;
-    } else {
-      shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
-    }
-
-    // Open in new tab instead of popup (more reliable)
-    window.open(shareUrl, '_blank');
-  };
-
-return (
-  <Modal show={show} onHide={handleClose} centered size="lg">
-    <Modal.Header closeButton>
-      <Modal.Title>{article?.title || "News Article"}</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      
-
-        {/* Social Media Share Buttons */}
         <div className="d-flex gap-2 mt-3">
-          <button
-            onClick={() => handleShare('facebook')}
+          <a
+            href={shareUrls.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn btn-primary flex-grow-1"
-            disabled={!article?.link}
+            onClick={(e) => {
+              if (!article?.link) {
+                e.preventDefault();
+                alert("Cannot share. Article link is missing.");
+              }
+            }}
           >
             <i className="bi bi-facebook me-2"></i> Share
-          </button>
-          
-          <button
-            onClick={() => handleShare('twitter')}
+          </a>
+
+          <a
+            href={shareUrls.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn btn-info flex-grow-1"
-            disabled={!article?.link}
+            onClick={(e) => {
+              if (!article?.link) {
+                e.preventDefault();
+                alert("Cannot tweet. Article link is missing.");
+              }
+            }}
           >
             <i className="bi bi-twitter me-2"></i> Tweet
-          </button>
+          </a>
         </div>
-  </Modal.Body>
-  </Modal>
-);
+      </Modal.Body>
+    </Modal>
+  );
 };
 
 export default NewsModal;
