@@ -235,27 +235,27 @@ const NewsModal = ({ show, handleClose, article }) => {
       }
     }
   }, [show, article, cleanContent]);
-// Improved share function
-const handleShare = (platform) => {
-  if (!article?.link) return;
-  
-  const url = encodeURIComponent(article.link);
-  const title = encodeURIComponent(article.title || "Check out this article");
-  const text = encodeURIComponent(`${article.title || "Interesting article"} - ${article.link}`);
-  
-  let shareUrl;
-  switch(platform) {
-    case 'facebook':
-      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`;
-      break;
-    case 'twitter':
-      shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
-      break;
-    default:
-      return;
+
+ // Reliable share function that always responds to clicks
+ const handleShare = (platform) => {
+  if (!article?.link) {
+    // Optional: Add visual feedback instead of silent fail
+    return; 
   }
-  
-  window.open(shareUrl, '_blank', 'width=600,height=400');
+
+  const url = encodeURIComponent(article.link);
+  const title = encodeURIComponent(article.title || "Check this out");
+
+  const urls = {
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`,
+    twitter: `https://twitter.com/intent/tweet?url=${url}&text=${title}`
+  };
+
+  window.open(
+    urls[platform], 
+    '_blank',
+    'width=600,height=400'
+  );
 };
 
 return (
@@ -265,36 +265,35 @@ return (
     </Modal.Header>
     <Modal.Body>
       {article?.image && (
-        <div className="text-center">
-          <img
-            src={article.image}
-            className="img-fluid mb-3"
-            style={{ borderRadius: "10px" }}
-            alt="News"
-          />
-        </div>
+        <img
+          src={article.image}
+          className="img-fluid mb-3 d-block mx-auto"
+          style={{ borderRadius: "10px", maxHeight: "300px" }}
+          alt="News"
+        />
       )}
 
-      <div dangerouslySetInnerHTML={{ __html: fullContent }}></div>
+      <div dangerouslySetInnerHTML={{ __html: fullContent }} />
 
-      <div className="news-social-media mt-3">
+      {/* Working share buttons with visual feedback */}
+      <div className="mt-3 d-flex gap-2">
         <button
           onClick={() => handleShare('facebook')}
-          className="btn btn-outline-primary me-2"
-          disabled={!article?.link}
+          className={`btn ${article?.link ? 'btn-primary' : 'btn-secondary'}`}
+          style={{ opacity: article?.link ? 1 : 0.7 }}
         >
           Share on Facebook
         </button>
         
         <button
           onClick={() => handleShare('twitter')}
-          className="btn btn-outline-info"
-          disabled={!article?.link}
+          className={`btn ${article?.link ? 'btn-info' : 'btn-secondary'}`}
+          style={{ opacity: article?.link ? 1 : 0.7 }}
         >
           Share on Twitter
         </button>
       </div>
-    </Modal.Body>
+  </Modal.Body>
   </Modal>
 );
 };
