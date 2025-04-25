@@ -209,20 +209,10 @@ const NewsModal = ({ show, handleClose, article }) => {
       .filter(paragraph => {
         const textContent = paragraph.replace(/<[^>]+>/g, '').trim();
         return textContent.length > 20 &&
-               !/^[\s\W]*$/.test(textContent) &&
-               !/^[\d\W]+$/.test(textContent);
+          !/^[\s\W]*$/.test(textContent) &&
+          !/^[\d\W]+$/.test(textContent);
       });
   }, [UNWANTED_PHRASES]); // Now properly included in dependencies
-
-
-  // Define the share handler function
-  const handleSocialShare = (e, platform) => {
-    if (!article?.link) {
-      e.preventDefault();
-      // Optionally add analytics or other silent handling here
-    }
-    // The default behavior (opening the share window) will proceed if link exists
-  };
 
 
   // Rest of the component remains the same...
@@ -246,6 +236,8 @@ const NewsModal = ({ show, handleClose, article }) => {
     }
   }, [show, article, cleanContent]);
 
+  const baseShareUrl = article?.link;
+
   return (
     <Modal show={show} onHide={handleClose} centered size="lg">
       <Modal.Header closeButton>
@@ -265,25 +257,28 @@ const NewsModal = ({ show, handleClose, article }) => {
 
         <div dangerouslySetInnerHTML={{ __html: fullContent }}></div>
 
+        {/* Social Media Share Buttons */}
         <div className="news-social-media mt-3">
           <a
-            href={article?.link ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.link)}` : '#'}
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseShareUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-outline-primary me-2"
-            onClick={(e) => handleSocialShare(e, 'facebook')}
           >
             Share on Facebook
           </a>
+
+
+
           <a
-            href={article?.link ? `https://twitter.com/intent/tweet?url=${encodeURIComponent(article.link)}&text=${encodeURIComponent(article.title || '')}` : '#'}
+            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(baseShareUrl)}&text=${encodeURIComponent(article?.title || "")}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-outline-info"
-            onClick={(e) => handleSocialShare(e, 'twitter')}
           >
             Share on Twitter
           </a>
+
         </div>
       </Modal.Body>
     </Modal>
