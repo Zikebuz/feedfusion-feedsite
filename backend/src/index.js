@@ -36,25 +36,64 @@ function isValidImageUrl(url) {
   );
 }
 
+// async function extractImageAndCaptionFromArticle(link) {
+//   try {
+//     const res = await fetch(link, {
+//       headers: { "User-Agent": "Mozilla/5.0" }
+//     });
+//     const html = await res.text();
+//     const figureMatch = html.match(/<figure[^>]*>([\s\S]*?)<\/figure>/i);
+//     if (figureMatch) {
+//       const imgMatch = figureMatch[1].match(/<img[^>]*src=["']([^"']+)["']/i);
+//       const captionMatch = figureMatch[1].match(/<figcaption[^>]*>([\s\S]*?)<\/figcaption>/i);
+//       return {
+//         image: imgMatch ? imgMatch[1] : "",
+//         figcaption: captionMatch ? captionMatch[1].trim() : ""
+//       };
+//     }
+//   } catch (err) {
+//     console.error("Failed to fetch article HTML:", link, err);
+//   }
+//   return { image: "", figcaption: "" };
+// }
+
 async function extractImageAndCaptionFromArticle(link) {
   try {
     const res = await fetch(link, {
-      headers: { "User-Agent": "Mozilla/5.0" }
+      headers: { 
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "text/html"
+      }
     });
     const html = await res.text();
+    
+    // First try to get OG meta tags
+    const ogImageMatch = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i);
+    const ogTitleMatch = html.match(/<meta\s+property="og:title"\s+content="([^"]+)"/i);
+    const ogDescriptionMatch = html.match(/<meta\s+property="og:description"\s+content="([^"]+)"/i);
+    
+    // Fallback to figure/img if OG tags not found
     const figureMatch = html.match(/<figure[^>]*>([\s\S]*?)<\/figure>/i);
-    if (figureMatch) {
+    let image = ogImageMatch ? ogImageMatch[1] : '';
+    let figcaption = ogDescriptionMatch ? ogDescriptionMatch[1] : '';
+    
+    if (!image && figureMatch) {
       const imgMatch = figureMatch[1].match(/<img[^>]*src=["']([^"']+)["']/i);
       const captionMatch = figureMatch[1].match(/<figcaption[^>]*>([\s\S]*?)<\/figcaption>/i);
-      return {
-        image: imgMatch ? imgMatch[1] : "",
-        figcaption: captionMatch ? captionMatch[1].trim() : ""
-      };
+      image = imgMatch ? imgMatch[1] : "";
+      figcaption = captionMatch ? captionMatch[1].trim() : "";
     }
+    
+    return {
+      image: image || "",
+      figcaption: figcaption || "",
+      ogTitle: ogTitleMatch ? ogTitleMatch[1] : "",
+      ogDescription: ogDescriptionMatch ? ogDescriptionMatch[1] : ""
+    };
   } catch (err) {
     console.error("Failed to fetch article HTML:", link, err);
+    return { image: "", figcaption: "", ogTitle: "", ogDescription: "" };
   }
-  return { image: "", figcaption: "" };
 }
 
 function matchCategory(itemCategories) {
@@ -70,6 +109,75 @@ function matchCategory(itemCategories) {
 
   return "";
 }
+
+// async function fetchRSS(url, targetCategory = null) {
+//   try {
+//     const response = await fetch(url, {
+//       headers: { "User-Agent": "Mozilla/5.0" }
+//     });
+//     const xml = await response.text();
+//     const parsed = await parseStringPromise(xml);
+
+//     const items = parsed?.rss?.channel?.[0]?.item || [];
+//     console.log(`Fetched ${items.length} items from: ${url}`);
+
+//     const processedItems = await Promise.all(
+//       items.map(async (item) => {
+//         const matchedCategory = matchCategory(item.category);
+
+//         if (targetCategory && matchedCategory !== targetCategory) {
+//           return null;
+//         }
+
+//         const mediaImage = item["media:content"]?.[0]?.$?.url || "";
+//         const description = item.description?.[0] || "";
+//         const contentEncoded = item["content:encoded"]?.[0] || "";
+//         const link = item.link?.[0] || "";
+
+
+//         let image = mediaImage;
+//         let figcaption = "";
+
+//         // Check if URL is invalid (contains double domain) or fails validation
+//         if (!isValidImageUrl(image) || image.includes('www.channelstv.com/www.reuters.com')) {
+//           const fallback = await extractImageAndCaptionFromArticle(link);
+//           if (fallback && isValidImageUrl(fallback.image)) {
+//             image = fallback.image;
+//             figcaption = fallback.figcaption;
+//           } else {
+//             image = "https://placehold.co/800x450";
+//           }
+//         }
+
+//         const contentParagraphs = (() => {
+//           const cleanedContent = contentEncoded.replace(/<!\[CDATA\[|\]\]>/g, "");
+//           const pMatches = cleanedContent.match(/<p[^>]*>.*?<\/p>/g);
+//           return pMatches ? pMatches : [];
+//         })();
+
+//         return {
+//           title: item.title?.[0] || "",
+//           link,
+//           pubDate: item.pubDate?.[0] ? new Date(item.pubDate[0]).toISOString() : "",
+//           description: (() => {
+//             const matches = description.match(/<p[^>]*>.*?<\/p>/g);
+//             return matches && matches.length > 0 ? matches[0] : description;
+//           })(),
+//           content: contentEncoded.replace(/<!\[CDATA\[|\]\]>/g, ""),
+//           contentParagraphs,
+//           image,
+//           figcaption,
+//           category: matchedCategory
+//         };
+//       })
+//     );
+
+//     return processedItems.filter(item => item !== null);
+//   } catch (err) {
+//     console.error("Error parsing feed:", url, err);
+//     return [];
+//   }
+// }
 
 async function fetchRSS(url, targetCategory = null) {
   try {
@@ -94,17 +202,20 @@ async function fetchRSS(url, targetCategory = null) {
         const description = item.description?.[0] || "";
         const contentEncoded = item["content:encoded"]?.[0] || "";
         const link = item.link?.[0] || "";
-
+        const title = item.title?.[0] || "";
 
         let image = mediaImage;
         let figcaption = "";
+        let ogTitle = title;
+        let ogDescription = description.replace(/<[^>]+>/g, '').substring(0, 200);
 
-        // Check if URL is invalid (contains double domain) or fails validation
         if (!isValidImageUrl(image) || image.includes('www.channelstv.com/www.reuters.com')) {
           const fallback = await extractImageAndCaptionFromArticle(link);
-          if (fallback && isValidImageUrl(fallback.image)) {
-            image = fallback.image;
+          if (fallback) {
+            image = isValidImageUrl(fallback.image) ? fallback.image : "https://placehold.co/800x450";
             figcaption = fallback.figcaption;
+            ogTitle = fallback.ogTitle || ogTitle;
+            ogDescription = fallback.ogDescription || ogDescription;
           } else {
             image = "https://placehold.co/800x450";
           }
@@ -117,18 +228,22 @@ async function fetchRSS(url, targetCategory = null) {
         })();
 
         return {
-          title: item.title?.[0] || "",
+          title: ogTitle, // Use OG title if available
           link,
           pubDate: item.pubDate?.[0] ? new Date(item.pubDate[0]).toISOString() : "",
-          description: (() => {
-            const matches = description.match(/<p[^>]*>.*?<\/p>/g);
-            return matches && matches.length > 0 ? matches[0] : description;
-          })(),
+          description: ogDescription, // Use OG description if available
           content: contentEncoded.replace(/<!\[CDATA\[|\]\]>/g, ""),
           contentParagraphs,
           image,
           figcaption,
-          category: matchedCategory
+          category: matchedCategory,
+          // Additional OG meta for sharing
+          ogMeta: {
+            title: ogTitle,
+            description: ogDescription,
+            image: image,
+            url: link
+          }
         };
       })
     );
@@ -167,6 +282,43 @@ export default {
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders() });
+    }
+
+     // Add new endpoint for generating share meta tags
+     if (path === "/api/share/meta") {
+      const articleUrl = url.searchParams.get("url");
+      if (!articleUrl) {
+        return new Response(JSON.stringify({ error: "Missing URL parameter" }), {
+          status: 400,
+          headers: corsHeaders()
+        });
+      }
+
+      try {
+        const meta = await extractImageAndCaptionFromArticle(articleUrl);
+        return new Response(JSON.stringify({
+          success: true,
+          meta: {
+            title: meta.ogTitle,
+            description: meta.ogDescription,
+            image: meta.image,
+            url: articleUrl
+          }
+        }), {
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders()
+          }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ 
+          error: "Failed to fetch meta tags",
+          details: err.message 
+        }), {
+          status: 500,
+          headers: corsHeaders()
+        });
+      }
     }
 
     if (path === "/api/news/home") {
@@ -255,6 +407,8 @@ export default {
         });
       }
     }
+
+  
 
     if (path === "/api/contact" && request.method === "POST") {
       try {

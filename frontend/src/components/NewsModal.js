@@ -147,46 +147,230 @@
 
 
 
+
+
+// import React, { useEffect, useState, useCallback, useMemo } from "react";
+// import { Modal } from "react-bootstrap";
+// import '../styles/style.css';
+
+
+// const NewsModal = ({ show, handleClose, article }) => {
+//   const [fullContent, setFullContent] = useState("Loading full news content...");
+ 
+//   // Memoize the unwanted phrases array so it doesn't change between renders
+//   const UNWANTED_PHRASES = useMemo(() => [
+//     "READ ALSO:",
+//     "READ ALSO",
+//     "READ:",
+//     "READ",
+//     "The post .* appeared first on .*",
+//     "All rights reserved",
+//     "Copyright ©",
+//     "Follow us on",
+//     "Share this article",
+//     "Related News",
+//     "For more information",
+//     "Contact us at",
+//     "Like our Facebook page",
+//     "Follow us on Twitter",
+//     "Subscribe to our channel",
+//     "Join our Telegram",
+//     "Download our app",
+//     "Kindly share this story",
+//     "punchng.com",
+//     "vanguardngr.com",
+//     "channelstv.com",
+//     "thisdaylive.com",
+//     "© \\d{4}",
+//     /EU Slaps .* Fines On .*/i,
+//     /EU Exports To US Surge By .*/i
+//   ], []);
+
+//   const cleanContent = useCallback((paragraphs) => {
+//     return paragraphs
+//       .map(paragraph => {
+//         let cleaned = paragraph;
+//         UNWANTED_PHRASES.forEach(phrase => {
+//           if (typeof phrase === 'string') {
+//             cleaned = cleaned.replace(new RegExp(phrase, 'gi'), '');
+//           } else if (phrase instanceof RegExp) {
+//             cleaned = cleaned.replace(phrase, '');
+//           }
+//         });
+
+//         cleaned = cleaned
+//           .replace(/<a\b[^>]*>(.*?)<\/a>/gi, '')
+//           .replace(/<img\b[^>]*>/gi, '')
+//           .replace(/<strong>(.*?)<\/strong>/gi, '$1')
+//           .replace(/<em>(.*?)<\/em>/gi, '$1')
+//           .replace(/&nbsp;/g, ' ')
+//           .replace(/\s+/g, ' ')
+//           .trim();
+
+//         return cleaned;
+//       })
+//       .filter(paragraph => {
+//         const textContent = paragraph.replace(/<[^>]+>/g, '').trim();
+//         return textContent.length > 20 &&
+//                !/^[\s\W]*$/.test(textContent) &&
+//                !/^[\d\W]+$/.test(textContent);
+//       });
+//   }, [UNWANTED_PHRASES]); // Now properly included in dependencies
+
+
+//   // Rest of the component remains the same...
+//   useEffect(() => {
+//     if (show) {
+//       if (article?.contentParagraphs && article.contentParagraphs.length > 0) {
+//         const cleanedParagraphs = cleanContent(article.contentParagraphs);
+
+//         if (cleanedParagraphs.length > 0) {
+//           const lastParagraph = cleanedParagraphs[cleanedParagraphs.length - 1];
+//           if (/source:|credit:|via |©|all rights reserved/i.test(lastParagraph)) {
+//             cleanedParagraphs.pop();
+//           }
+//         }
+
+//         const filteredContent = cleanedParagraphs.join("");
+//         setFullContent(filteredContent || "<p>Content not available.</p>");
+//       } else {
+//         setFullContent("<p>Content not available.</p>");
+//       }
+//     }
+//   }, [show, article, cleanContent]);
+
+//   const baseShareUrl = article?.link 
+
+//   return (
+//     <Modal show={show} onHide={handleClose} centered size="lg">
+//       <Modal.Header closeButton>
+//         <Modal.Title>{article?.title || "News Article"}</Modal.Title>
+//       </Modal.Header>
+//       <Modal.Body>
+//         {article?.image && (
+//           <div className="text-center">
+//             <img
+//               src={article.image}
+//               className="img-fluid mb-3"
+//               style={{ borderRadius: "10px" }}
+//               alt="News"
+//             />
+//           </div>
+//         )}
+
+//         <div dangerouslySetInnerHTML={{ __html: fullContent }}></div>
+
+//          {/* Social Media Share Buttons */}
+//         {/* <div className="news-social-media mt-3">
+//         <a
+//   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseShareUrl)}`}
+//   target="_blank"
+//   rel="noopener noreferrer"
+//   className="btn btn-outline-primary me-2"
+// >
+//   Share on Facebook
+// </a>
+
+
+
+// <a
+//   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article?.title + ' - ' + article?.link)}`}
+//   target="_blank"
+//   rel="noopener noreferrer"
+//   className="btn btn-outline-info"
+// >
+//   Share on Twitter
+// </a>
+
+
+//         </div> */}
+
+//         {/* Social Media Share Buttons */}
+// <div className="news-social-media mt-4 d-flex flex-wrap gap-2 justify-content-start">
+//   {/* Facebook */}
+//   <a
+//     href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseShareUrl)}`}
+//     target="_blank"
+//     rel="noopener noreferrer"
+//     className="btn btn-outline-primary"
+//   >
+//     Share on Facebook
+//   </a>
+
+//   {/* Twitter / X */}
+//   <a
+//     href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article?.title)}&url=${encodeURIComponent(baseShareUrl)}`}
+//     target="_blank"
+//     rel="noopener noreferrer"
+//     className="btn btn-outline-info"
+//   >
+//     Share on Twitter
+//   </a>
+
+  
+
+//   {/* WhatsApp (mobile-first) */}
+//   <a
+//     href={`https://api.whatsapp.com/send?text=${encodeURIComponent(article?.title + ' - ' + baseShareUrl)}`}
+//     target="_blank"
+//     rel="noopener noreferrer"
+//     className="btn btn-outline-success"
+//   >
+//     Share on WhatsApp
+//   </a>
+// </div>
+
+//       </Modal.Body>
+//     </Modal>
+//   );
+// };
+
+// export default NewsModal;
+
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import '../styles/style.css';
 
+const UNWANTED_PHRASES = [
+  "READ ALSO:",
+  "READ ALSO",
+  "READ:",
+  "READ",
+  "The post .* appeared first on .*",
+  "All rights reserved",
+  "Copyright ©",
+  "Follow us on",
+  "Share this article",
+  "Related News",
+  "For more information",
+  "Contact us at",
+  "Like our Facebook page",
+  "Follow us on Twitter",
+  "Subscribe to our channel",
+  "Join our Telegram",
+  "Download our app",
+  "Kindly share this story",
+  "punchng.com",
+  "vanguardngr.com",
+  "channelstv.com",
+  "thisdaylive.com",
+  "© \\d{4}",
+  /EU Slaps .* Fines On .*/i,
+  /EU Exports To US Surge By .*/i
+];
 
 const NewsModal = ({ show, handleClose, article }) => {
   const [fullContent, setFullContent] = useState("Loading full news content...");
-  const baseShareUrl = article?.link; 
-  // Memoize the unwanted phrases array so it doesn't change between renders
-  const UNWANTED_PHRASES = useMemo(() => [
-    "READ ALSO:",
-    "READ ALSO",
-    "READ:",
-    "READ",
-    "The post .* appeared first on .*",
-    "All rights reserved",
-    "Copyright ©",
-    "Follow us on",
-    "Share this article",
-    "Related News",
-    "For more information",
-    "Contact us at",
-    "Like our Facebook page",
-    "Follow us on Twitter",
-    "Subscribe to our channel",
-    "Join our Telegram",
-    "Download our app",
-    "Kindly share this story",
-    "punchng.com",
-    "vanguardngr.com",
-    "channelstv.com",
-    "thisdaylive.com",
-    "© \\d{4}",
-    /EU Slaps .* Fines On .*/i,
-    /EU Exports To US Surge By .*/i
-  ], []);
+  const [shareMeta, setShareMeta] = useState(null);
+  const [isLoadingShare, setIsLoadingShare] = useState(false);
 
   const cleanContent = useCallback((paragraphs) => {
+    if (!paragraphs || !Array.isArray(paragraphs)) return [];
+    
     return paragraphs
       .map(paragraph => {
+        if (typeof paragraph !== 'string') return '';
+        
         let cleaned = paragraph;
         UNWANTED_PHRASES.forEach(phrase => {
           if (typeof phrase === 'string') {
@@ -196,7 +380,7 @@ const NewsModal = ({ show, handleClose, article }) => {
           }
         });
 
-        cleaned = cleaned
+        return cleaned
           .replace(/<a\b[^>]*>(.*?)<\/a>/gi, '')
           .replace(/<img\b[^>]*>/gi, '')
           .replace(/<strong>(.*?)<\/strong>/gi, '$1')
@@ -204,8 +388,6 @@ const NewsModal = ({ show, handleClose, article }) => {
           .replace(/&nbsp;/g, ' ')
           .replace(/\s+/g, ' ')
           .trim();
-
-        return cleaned;
       })
       .filter(paragraph => {
         const textContent = paragraph.replace(/<[^>]+>/g, '').trim();
@@ -213,31 +395,73 @@ const NewsModal = ({ show, handleClose, article }) => {
                !/^[\s\W]*$/.test(textContent) &&
                !/^[\d\W]+$/.test(textContent);
       });
-  }, [UNWANTED_PHRASES]); // Now properly included in dependencies
+  }, []); // Empty dependency array because UNWANTED_PHRASES is now a constant
 
-
-  // Rest of the component remains the same...
+  // Fetch share meta data when article changes
   useEffect(() => {
-    if (show) {
-      if (article?.contentParagraphs && article.contentParagraphs.length > 0) {
-        const cleanedParagraphs = cleanContent(article.contentParagraphs);
-
-        if (cleanedParagraphs.length > 0) {
-          const lastParagraph = cleanedParagraphs[cleanedParagraphs.length - 1];
-          if (/source:|credit:|via |©|all rights reserved/i.test(lastParagraph)) {
-            cleanedParagraphs.pop();
-          }
+    const fetchShareMeta = async () => {
+      if (!article?.link) return;
+      
+      setIsLoadingShare(true);
+      try {
+        const response = await fetch(
+          `/api/share/meta?url=${encodeURIComponent(article.link)}`
+        );
+        const data = await response.json();
+        if (data.success) {
+          setShareMeta(data.meta);
         }
+      } catch (error) {
+        console.error("Failed to fetch share meta:", error);
+      } finally {
+        setIsLoadingShare(false);
+      }
+    };
 
-        const filteredContent = cleanedParagraphs.join("");
-        setFullContent(filteredContent || "<p>Content not available.</p>");
-      } else {
+    fetchShareMeta();
+  }, [article]);
+
+  // Process content when modal opens or article changes
+  useEffect(() => {
+    if (show && article) {
+      try {
+        const content = article.contentParagraphs || [];
+        const cleanedParagraphs = cleanContent(content);
+
+        const finalParagraphs = cleanedParagraphs.filter((para, index) => {
+          if (index === cleanedParagraphs.length - 1) {
+            return !/source:|credit:|via |©|all rights reserved/i.test(para);
+          }
+          return true;
+        });
+
+        setFullContent(
+          finalParagraphs.length > 0 
+            ? finalParagraphs.join("") 
+            : "<p>Content not available.</p>"
+        );
+      } catch (error) {
+        console.error("Error processing content:", error);
         setFullContent("<p>Content not available.</p>");
       }
+    } else {
+      setFullContent("<p>Content not available.</p>");
     }
-  }, [show, article, cleanContent]);
+  }, [show, article, cleanContent]); // Now includes cleanContent in dependencies
 
- 
+  const shareUrls = useMemo(() => {
+    if (!shareMeta) return {};
+    
+    const { title, url } = shareMeta;
+    const text = `${title} - ${url}`;
+    
+    return {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(title)}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
+      whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`,
+      linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`
+    };
+  }, [shareMeta]);
 
   return (
     <Modal show={show} onHide={handleClose} centered size="lg">
@@ -251,35 +475,52 @@ const NewsModal = ({ show, handleClose, article }) => {
               src={article.image}
               className="img-fluid mb-3"
               style={{ borderRadius: "10px" }}
-              alt="News"
+              alt={article.title || "News"}
+              onError={(e) => {
+                e.target.src = "https://placehold.co/800x450?text=Image+Not+Available";
+              }}
             />
           </div>
         )}
 
-        <div dangerouslySetInnerHTML={{ __html: fullContent }}></div>
+        <div dangerouslySetInnerHTML={{ __html: fullContent }} />
 
-         {/* Social Media Share Buttons */}
-        <div className="news-social-media mt-3">
-        <a
-  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseShareUrl)}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="btn btn-outline-primary me-2"
->
-  Share on Facebook
-</a>
+        <div className="mt-4 d-flex flex-wrap gap-2">
+          <a
+            href={shareUrls.facebook || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`btn btn-primary ${isLoadingShare ? 'disabled' : ''}`}
+            onClick={(e) => !shareUrls.facebook && e.preventDefault()}
+            aria-label="Share on Facebook"
+          >
+            <i className="bi bi-facebook me-2"></i>
+            {isLoadingShare ? 'Loading...' : 'Share'}
+          </a>
 
+          <a
+            href={shareUrls.twitter || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`btn btn-info ${isLoadingShare ? 'disabled' : ''}`}
+            onClick={(e) => !shareUrls.twitter && e.preventDefault()}
+            aria-label="Share on Twitter"
+          >
+            <i className="bi bi-twitter-x me-2"></i>
+            {isLoadingShare ? 'Loading...' : 'Tweet'}
+          </a>
 
-
-<a
-  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(baseShareUrl)}&text=${encodeURIComponent(article?.title || "")}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="btn btn-outline-info"
->
-  Share on Twitter
-</a>
-
+          <a
+            href={shareUrls.whatsapp || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`btn btn-success ${isLoadingShare ? 'disabled' : ''}`}
+            onClick={(e) => !shareUrls.whatsapp && e.preventDefault()}
+            aria-label="Share on WhatsApp"
+          >
+            <i className="bi bi-whatsapp me-2"></i>
+            {isLoadingShare ? 'Loading...' : 'WhatsApp'}
+          </a>
         </div>
       </Modal.Body>
     </Modal>
