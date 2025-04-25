@@ -235,9 +235,6 @@ const NewsModal = ({ show, handleClose, article }) => {
     }
   }, [show, article, cleanContent]);
 
-  const shareUrl = article?.link ? encodeURIComponent(article.link) : '';
-  const shareText = article?.title ? encodeURIComponent(article.title) : '';
-
   return (
     <Modal show={show} onHide={handleClose} centered size="lg">
       <Modal.Header closeButton>
